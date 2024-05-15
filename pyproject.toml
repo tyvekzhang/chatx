@@ -1,0 +1,50 @@
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = [
+  "poetry-core",
+]
+
+[tool.poetry]
+name = "chatx"
+version = "0.1.0"
+description = "AI is changing the world, enabling everyone to benefit from ChatX."
+license = "MIT"
+authors = [
+  "wujilab <wujilab@gmail.com>",
+]
+maintainers = [
+  "wujilab <wujilab@gmail.com>",
+]
+readme = "README.md"
+homepage = "https://github.com/WujiLab/chatx"
+repository = "https://github.com/WujiLab/chatx"
+documentation = "https://github.com/WujiLab/chatx/wiki"
+keywords = ["AI", "langchain", "fastapi", "chat", "knowledge base", "vector search"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: Implementation :: PyPy",
+]
+packages = [
+  { include = "chatx"},
+]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+fastapi = "^0.111.0"
+loguru = "^0.7.2"
+langchain = "^0.1.20"
+fastapi-offline = "^1.7.1"
+sentence-transformers = "^2.7.0"
+
+[tool.poetry.scripts]
+[[tool.poetry.source]]
+name = "tsinghua"
+url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple/"
+priority = "primary"

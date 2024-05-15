@@ -1,0 +1,5 @@
+.vscode/
+.idea/
+*.lock
+log/
+.ruff_cache/
