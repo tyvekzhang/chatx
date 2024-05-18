@@ -8,7 +8,7 @@ from sqlalchemy import create_engine
 from config.config import configs
 from model.embedding.embedding import get_embeddings_model
 
-engine = create_engine(configs.connection, echo=True)
+engine = create_engine(configs.connection, pool_size=5, echo=True)
 """
 Create a SQLAlchemy engine instance using the connection string from the configs module.
 The echo=True parameter is used for logging all the SQL queries.
