@@ -23,6 +23,7 @@ class Configs(BaseSettings):
     embedding_model_path: str
     api_version: str
     log_file: str
+    connection: str
 
     class Config:
         env_file = ENV_FILE
