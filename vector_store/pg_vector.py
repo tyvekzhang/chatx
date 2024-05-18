@@ -34,7 +34,9 @@ async def get_vectorstore(collection_name: str = "wujilab") -> PGVector:
     )
 
 
-async def score_threshold_process(doc_list: List[Document], score_threshold: float = 0.7, k: int = 3):
+async def score_threshold_process(
+    doc_list: List[Document], score_threshold: float = 0.7, k: int = 3
+):
     """
     Filter and limit the list of documents based on a score threshold and a maximum number of results.
 
@@ -55,7 +57,9 @@ async def score_threshold_process(doc_list: List[Document], score_threshold: flo
     return doc_list[:k]
 
 
-async def add_documents(documents: Union[List[Document], List[str]], collection_name: str = "wujilab"):
+async def add_documents(
+    documents: Union[List[Document], List[str]], collection_name: str = "wujilab"
+):
     """
     Add a list of documents to the specified collection.
 
@@ -70,9 +74,11 @@ async def add_documents(documents: Union[List[Document], List[str]], collection_
         transform_documents = []
         for doc in documents:
             hash_object = hashlib.sha256()
-            hash_object.update(doc.encode('utf-8'))
+            hash_object.update(doc.encode("utf-8"))
             hash_value = hash_object.hexdigest()
-            transform_documents.append(Document(page_content=doc, metadata={"id": hash_value}))
+            transform_documents.append(
+                Document(page_content=doc, metadata={"id": hash_value})
+            )
         documents = transform_documents
     vectorstore: PGVector = await get_vectorstore(collection_name)
     return await vectorstore.aadd_documents(documents)
