@@ -24,6 +24,8 @@ class Configs(BaseSettings):
     api_version: str
     log_file: str
     connection: str
+    endpoint_url: str
+    llm_model: str
 
     class Config:
         env_file = ENV_FILE

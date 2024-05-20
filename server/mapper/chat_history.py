@@ -1,10 +1,12 @@
+from typing import Optional, List
+
 from sqlmodel import Session, select
 
 from server.data_object.chat_history import ChatHistoryDO
 from vector_store.pg_vector import engine
 
 
-async def add_chat_history(chatHistoryDO: ChatHistoryDO):
+async def add_chat_history(chatHistoryDO: ChatHistoryDO) -> ChatHistoryDO:
     """
     Add a new chat history record to the database.
 
@@ -28,7 +30,7 @@ async def add_chat_history(chatHistoryDO: ChatHistoryDO):
             raise e
 
 
-async def search_chat_history(limit: int):
+async def search_chat_history(limit: int) -> Optional[List[ChatHistoryDO]]:
     """
     Search and retrieve chat history records from the database.
 

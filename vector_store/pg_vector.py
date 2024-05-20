@@ -35,7 +35,7 @@ async def get_vectorstore(collection_name: str = "wujilab") -> PGVector:
 
 
 async def score_threshold_process(
-    doc_list: List[Document], score_threshold: float = 0.7, k: int = 3
+    doc_list: List[Document], score_threshold: float = 0.8, k: int = 3
 ):
     """
     Filter and limit the list of documents based on a score threshold and a maximum number of results.

@@ -4,6 +4,7 @@ from typing import List
 
 from fastapi import APIRouter
 
+from model.chat.chat import ChatRequest, chat_llm
 from model.embedding.embedding import get_embeddings_model
 from server.enums.response import ResponseCode
 from server.result import result
@@ -61,3 +62,17 @@ async def search_docs(query: str):
         dict: A success response containing the top-k relevance docs.
     """
     return result.success(await search_documents(query))
+
+
+@router.post("/chat")
+async def chat(request: ChatRequest):
+    """
+    Endpoint to handle chat requests.
+
+    Args:
+        request (ChatRequest): Request object containing the chat input.
+
+    Returns:
+        dict: A dictionary containing the success status and the chat response from the LLM.
+    """
+    return result.success(await chat_llm(request))
