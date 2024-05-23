@@ -1,26 +1,29 @@
 import hashlib
+import operator
 from typing import List, Union
 
 from langchain_core.documents import Document
 from langchain_postgres import PGVector
 from sqlalchemy import create_engine
 
+from component.model_runtime.model_engine.factory import get_embeddings_model
 from config.config import configs
-from model.embedding.embedding import get_embeddings_model
 
 engine = create_engine(configs.connection, pool_size=5, echo=True)
 """
-Create a SQLAlchemy engine instance using the connection string from the configs module.
+Create a SQLAlchemy model_engine instance using the connection string from the configs module.
 The echo=True parameter is used for logging all the SQL queries.
 """
 
 
-async def get_vectorstore(collection_name: str = "wujilab") -> PGVector:
+async def get_vectorstore(
+    collection_name: str = configs.default_collection_name,
+) -> PGVector:
     """
     Get a PGVector instance for the specified collection name.
 
     Args:
-        collection_name (str, optional): The name of the collection to use. Defaults to "wujilab".
+        collection_name (str, optional): The name of the collection to use. Defaults to configs.default_collection_name.
 
     Returns:
         PGVector: An instance of the PGVector class.
@@ -35,7 +38,7 @@ async def get_vectorstore(collection_name: str = "wujilab") -> PGVector:
 
 
 async def score_threshold_process(
-    doc_list: List[Document], score_threshold: float = 0.8, k: int = 3
+    doc_list: List[Document], score_threshold: float = 0.7, k: int = 3
 ):
     """
     Filter and limit the list of documents based on a score threshold and a maximum number of results.
@@ -49,23 +52,25 @@ async def score_threshold_process(
         List[Document]: A list of (Document, similarity score) tuples filtered and limited based on the provided parameters.
     """
     if score_threshold is not None:
+        cmp = operator.le
         doc_list = [
             (doc, similarity)
             for doc, similarity in doc_list
-            if 1 - similarity > score_threshold
+            if cmp(similarity, score_threshold)
         ]
     return doc_list[:k]
 
 
 async def add_documents(
-    documents: Union[List[Document], List[str]], collection_name: str = "wujilab"
+    documents: Union[List[Document], List[str]],
+    collection_name: str = configs.default_collection_name,
 ):
     """
     Add a list of documents to the specified collection.
 
     Args:
         documents (Union[List[Document], List[str]]): A list of Document objects or strings to be added.
-        collection_name (str, optional): The name of the collection to add the documents to. Defaults to "wujilab".
+        collection_name (str, optional): The name of the collection to add the documents to. Defaults to configs.default_collection_name.
 
     Returns:
         List[str]: A list of IDs for the added documents.
@@ -84,13 +89,15 @@ async def add_documents(
     return await vectorstore.aadd_documents(documents)
 
 
-async def search_documents(text: str, collection_name: str = "wujilab"):
+async def search_documents(
+    text: str, collection_name: str = configs.default_collection_name
+):
     """
     Search for documents matching the given text query.
 
     Args:
         text (str): The text query to search for.
-        collection_name (str, optional): The name of the collection to search in. Defaults to "wujilab".
+        collection_name (str, optional): The name of the collection to search in. Defaults to configs.default_collection_name.
 
     Returns:
         List[Document]: A list of (Document, similarity score) tuples matching the query.

@@ -45,6 +45,8 @@ sentence-transformers = "^2.7.0"
 langchain-postgres = "^0.0.4"
 sqlmodel = "^0.0.18"
 alembic = "^1.13.1"
+dashscope = "^1.19.1"
+dashvector = "^1.0.14"
 
 [tool.poetry.scripts]
 [[tool.poetry.source]]

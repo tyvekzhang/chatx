@@ -2,8 +2,8 @@ from typing import Optional, List
 
 from sqlmodel import Session, select
 
-from server.data_object.chat_history import ChatHistoryDO
-from vector_store.pg_vector import engine
+from server.data_object.history import ChatHistoryDO
+from component.vector_store.pg_vector import engine
 
 
 async def add_chat_history(chatHistoryDO: ChatHistoryDO) -> ChatHistoryDO:

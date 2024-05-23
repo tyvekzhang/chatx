@@ -11,7 +11,7 @@ current_dir = Path(os.path.dirname(os.path.abspath(__file__)))
 project_dir = str(Path(current_dir).parent.parent)
 sys.path.insert(0, project_dir)
 
-from server.data_object.chat_history import ChatHistoryDO  # noqa
+from server.data_object.history import ChatHistoryDO  # noqa
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

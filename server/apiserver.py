@@ -3,6 +3,7 @@
 import os
 import sys
 from pathlib import Path
+
 import uvicorn
 from fastapi_offline import FastAPIOffline
 from starlette.middleware.cors import CORSMiddleware
@@ -12,7 +13,7 @@ project_dir = str(Path(current_dir).parent)
 sys.path.insert(0, project_dir)
 
 from config.config import configs  # noqa
-from server.router.router import router  # noqa
+from server.controller.controller import router  # noqa
 
 # Offline swagger docs
 app = FastAPIOffline(

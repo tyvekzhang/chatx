@@ -1,7 +1,10 @@
-from sqlalchemy import BigInteger, Column, String
-from sqlmodel import SQLModel, Field
+"""History data object"""
+
 from datetime import datetime
 from typing import Optional
+
+from sqlalchemy import BigInteger, Column, String
+from sqlmodel import SQLModel, Field
 
 
 class ChatHistoryDO(SQLModel, table=True):

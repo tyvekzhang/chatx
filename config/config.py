@@ -23,9 +23,12 @@ class Configs(BaseSettings):
     embedding_model_path: str
     api_version: str
     log_file: str
+    online: bool
+    default_collection_name: str
     connection: str
     endpoint_url: str
     llm_model: str
+    dashscope_api_key: str
 
     class Config:
         env_file = ENV_FILE
