@@ -9,11 +9,8 @@ from component.model_runtime.schema.chat import ChatRequest
 from component.vector_store.pg_vector import add_documents
 from server.enums.response import ResponseCode
 from server.result import result
-from server.service.impl.service_impl import (
-    get_service,
-    handle_event_stream,
-    handle_response,
-)
+from server.service.impl.service_impl import get_service
+from server.util.helper import handle_event_stream, handle_response
 
 router = APIRouter()
 
