@@ -20,7 +20,11 @@ from component.prompt.prompt import (
 )
 from component.vector_store.pg_vector import search_documents, add_documents
 from server.data_object.history import ChatHistoryDO
-from server.mapper.chat_history import add_chat_history, search_chat_history, clear_all_chat_history
+from server.mapper.chat_history import (
+    add_chat_history,
+    search_chat_history,
+    clear_all_chat_history,
+)
 from server.service.service import Service
 
 
@@ -113,7 +117,9 @@ class ServiceImpl(Service):
             api_key="no need key for local deployment", url=url, mode="crawl"
         )
         crawled_docs = loader.load()
-        text_splitter = RecursiveCharacterTextSplitter(chunk_size=2000, chunk_overlap=200)
+        text_splitter = RecursiveCharacterTextSplitter(
+            chunk_size=2000, chunk_overlap=200
+        )
         split_doc = text_splitter.split_documents(crawled_docs)
         return await add_documents(split_doc)
 

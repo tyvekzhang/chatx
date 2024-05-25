@@ -7,7 +7,7 @@ requires = [
 [tool.poetry]
 name = "chatx"
 version = "0.1.0"
-description = "AI is changing the world, enabling everyone to benefit from ChatX."
+description = "Enabling everyone to benefit from ChatX."
 license = "MIT"
 authors = [
   "wujilab <wujilab@gmail.com>",
