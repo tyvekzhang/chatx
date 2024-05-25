@@ -1,9 +1,12 @@
 """Service impl"""
 
 from typing import List
+from loguru import logger
 
 from langchain_core.documents import Document
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 
+from component.data_loader.firecrawl import FireCrawlLoader
 from component.model_runtime.model_engine.base.llm_model import LargeLanguageModel
 from component.model_runtime.model_engine.factory import (
     get_embeddings_model,
@@ -15,9 +18,9 @@ from component.prompt.prompt import (
     REPHRASE_TEMPLATE,
     RESPONSE_TEMPLATE,
 )
-from component.vector_store.pg_vector import search_documents
+from component.vector_store.pg_vector import search_documents, add_documents
 from server.data_object.history import ChatHistoryDO
-from server.mapper.chat_history import add_chat_history, search_chat_history
+from server.mapper.chat_history import add_chat_history, search_chat_history, clear_all_chat_history
 from server.service.service import Service
 
 
@@ -29,6 +32,7 @@ class ServiceImpl(Service):
         :param texts: A list of document texts.
         :return: A list of embeddings for each document.
         """
+        logger.info(f"Word count {str(texts)}")
         textEmbeddingModel = await get_embeddings_model()
         return textEmbeddingModel.embed_documents(texts)
 
@@ -70,6 +74,7 @@ class ServiceImpl(Service):
         :return: Large model responds
         """
         question = request.question
+        logger.info(f"Question url {question}")
         chatHistoryDO = ChatHistoryDO(query_history=question)
         await add_chat_history(chatHistoryDO)
         docs: List[Document] = await search_documents(question)
@@ -77,6 +82,8 @@ class ServiceImpl(Service):
             return PREDEFINED_RESPONSE
         llm = await get_llm_model()
         rephrase_question = await self.rephrase(request=request, llm=llm)
+        if len(rephrase_question) == 0:
+            rephrase_question = question
         if len(docs) == 0:
             return llm.chat(question=rephrase_question, stream=request.stream)
         page_content_list = []
@@ -88,6 +95,33 @@ class ServiceImpl(Service):
         return llm.chat(
             question=rephrase_question, content=response_template, stream=request.stream
         )
+
+    async def crawl_document(self, url: str):
+        """
+        Crawling web page content from a URL and coexisting it in a vector database
+
+        Args:
+            url (str): A url starts with http(https)
+
+        Returns:
+            dict: A success response containing the added id in vector store.
+        """
+        logger.info(f"Crawl url {url}")
+        if (not url.startswith("http")) and (not url.startswith("https")):
+            raise
+        loader = FireCrawlLoader(
+            api_key="no need key for local deployment", url=url, mode="crawl"
+        )
+        crawled_docs = loader.load()
+        text_splitter = RecursiveCharacterTextSplitter(chunk_size=2000, chunk_overlap=200)
+        split_doc = text_splitter.split_documents(crawled_docs)
+        return await add_documents(split_doc)
+
+    async def clear_history(self) -> None:
+        """
+        Clear all chat history
+        """
+        await clear_all_chat_history()
 
 
 async def get_service():

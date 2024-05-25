@@ -28,32 +28,6 @@ async def liveness() -> Dict:
     return {"code": ResponseCode.SUCCESS.code, "msg": "Hi"}
 
 
-@router.post("/embedding")
-async def embedding(texts: List[str]) -> Dict:
-    """
-    Generate embedding for texts.
-
-    Returns:
-        dict: A status object with a 'code' and a 'msg' for texts embedding.
-    """
-    embedding_service = await get_service()
-    return result.success(await embedding_service.embed_documents(texts))
-
-
-@router.post("/documents")
-async def add_docs(documents: List[str]):
-    """
-    Add a list of documents to the document store.
-
-    Args:
-        documents (List[str]): A list of document strings to be added.
-
-    Returns:
-        dict: A success response containing the added id in vector store.
-    """
-    return result.success(await add_documents(documents))
-
-
 @router.post("/chat")
 async def chat(request: ChatRequest):
     """
@@ -70,3 +44,55 @@ async def chat(request: ChatRequest):
     if request.stream:
         return StreamingResponse(content=handle_event_stream(response), headers=headers)
     return result.success(handle_response(response))
+
+
+@router.post("/crawl")
+async def crawl_docs(url: str):
+    """
+    Crawling web page content from a URL and coexisting it in a vector database
+
+    Args:
+        url (str): A url starts with http(https)
+
+    Returns:
+        dict: A success response containing the added id in vector store.
+    """
+    service = await get_service()
+    return result.success(await service.crawl_document(url=url))
+
+
+@router.post("/documents")
+async def add_docs(documents: List[str]):
+    """
+    Add a list of documents to the document store.
+
+    Args:
+        documents (List[str]): A list of document strings to be added.
+
+    Returns:
+        dict: A success response containing the added id in vector store.
+    """
+    return result.success(await add_documents(documents))
+
+
+@router.post("/embedding")
+async def embedding(texts: List[str]) -> Dict:
+    """
+    Generate embedding for texts.
+
+    Returns:
+        dict: A status object with a 'code' and a 'msg' for texts embedding.
+    """
+    embedding_service = await get_service()
+    return result.success(await embedding_service.embed_documents(texts))
+
+
+@router.delete("/history")
+async def clear_history() -> Dict:
+    """
+    Clear all chat history
+    :return: A status object with a 'code' and a 'msg' for success
+    """
+    service = await get_service()
+    await service.clear_history()
+    return result.success()

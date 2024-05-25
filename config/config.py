@@ -29,6 +29,7 @@ class Configs(BaseSettings):
     endpoint_url: str
     llm_model: str
     dashscope_api_key: str
+    crawl_url: str
 
     class Config:
         env_file = ENV_FILE

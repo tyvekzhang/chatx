@@ -1,5 +1,6 @@
 from typing import Optional, List
 
+from sqlalchemy import text
 from sqlmodel import Session, select
 
 from server.data_object.history import ChatHistoryDO
@@ -43,8 +44,17 @@ async def search_chat_history(limit: int) -> Optional[List[ChatHistoryDO]]:
     with Session(engine) as session:
         statement = (
             select(ChatHistoryDO)
-            .order_by(ChatHistoryDO.update_time.desc())
-            .limit(limit)
+                .order_by(ChatHistoryDO.update_time.desc())
+                .limit(limit)
         )
         results = session.exec(statement)
         return results.all()
+
+
+async def clear_all_chat_history() -> None:
+    """
+    Clear all chat history
+    """
+    with Session(engine) as session:
+        session.execute(text('DELETE FROM chat_history'))
+        session.commit()
